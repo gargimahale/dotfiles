@@ -7,17 +7,21 @@ My macOS development environment on an M4 Max MacBook, managed with [GNU Stow](h
 ```
 dotfiles/
 ├── aerospace/            # AeroSpace tiling WM (Stow → ~/.config/aerospace/)
-│   └── aerospace/
-│       └── aerospace.toml
+│   └── aerospace.toml
+├── gh-dash/              # GitHub dashboard (Stow → ~/.config/gh-dash/)
+│   └── config.yml
 ├── ghostty/              # Ghostty terminal (Stow → ~/.config/ghostty/)
-│   └── ghostty/
-│       └── config
+│   └── config
 ├── nushell/              # Nushell config (Stow → ~/.config/nushell/)
-│   └── nushell/
-│       ├── config.nu
-│       └── env.nu
+│   ├── config.nu
+│   └── env.nu
 ├── nvim/                 # Neovim config (Stow → ~/.config/nvim/)
 │   └── ...
+├── television/           # Television fuzzy finder (Stow → ~/.config/television/)
+│   └── config.toml
+├── tmux/                 # Tmux config (Stow → ~/.config/tmux/)
+│   ├── tmux.conf
+│   └── tmux.reset.conf
 ├── zshrc/                # Zsh config (Stow → ~/.zshrc)
 │   └── .zshrc
 ├── nix-darwin/           # nix-darwin system config (NOT managed by Stow)
@@ -77,14 +81,35 @@ Some packages fail to build through nix. Install via brew:
 /opt/homebrew/bin/brew install direnv mise
 ```
 
-### 5. Stow dotfiles
+### 5. Install tmux plugin manager
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
+
+Then open tmux and press `Ctrl+A` then `I` (capital I) to install plugins.
+
+### 6. Install gh-dash
+
+```bash
+gh auth login
+gh extension install dlvhdr/gh-dash
+```
+
+### 7. Install television
+
+```bash
+brew install television
+```
+
+### 8. Stow dotfiles
 
 ```bash
 cd ~/dotfiles
 ./setup.sh
 ```
 
-### 6. Start AeroSpace
+### 9. Start AeroSpace
 
 ```bash
 open /Applications/AeroSpace.app
@@ -112,6 +137,9 @@ stow -t ~ zshrc
 stow ghostty
 stow nushell
 stow aerospace
+stow tmux
+stow gh-dash
+stow television
 ```
 
 ## nix-darwin
@@ -203,6 +231,120 @@ AeroSpace is a tiling window manager. Windows automatically arrange into tiles �
 | Alt + Shift + ↑ | Join with up |
 | Alt + Shift + → | Join with right |
 
+## Tmux Shortcuts
+
+Tmux is a terminal multiplexer. Prefix is `Ctrl+A` (not the default `Ctrl+B`).
+
+### Panes
+
+| Shortcut | Action |
+|----------|--------|
+| Ctrl+A, v | Split vertical |
+| Ctrl+A, s | Split horizontal |
+| Ctrl+A, h/j/k/l | Move between panes (vim-style) |
+| Ctrl+A, c | Kill pane |
+| Ctrl+A, z | Zoom/unzoom pane |
+| Ctrl+A, , | Resize pane left |
+| Ctrl+A, . | Resize pane right |
+| Ctrl+A, - | Resize pane down |
+| Ctrl+A, = | Resize pane up |
+
+### Windows
+
+| Shortcut | Action |
+|----------|--------|
+| Ctrl+A, Ctrl+C | New window |
+| Ctrl+A, H | Previous window |
+| Ctrl+A, L | Next window |
+| Ctrl+A, Ctrl+A | Last window |
+| Ctrl+A, r | Rename window |
+
+### Sessions
+
+| Shortcut | Action |
+|----------|--------|
+| Ctrl+A, o | Session manager (sessionx) |
+| Ctrl+A, S | Choose session |
+| Ctrl+A, Ctrl+D | Detach |
+
+### Plugins
+
+| Shortcut | Action |
+|----------|--------|
+| Ctrl+A, p | Floating pane (floax) |
+| Ctrl+A, I | Install plugins (TPM) |
+| Ctrl+A, R | Reload config |
+| Ctrl+A, K | Clear screen |
+
+### Plugins installed
+
+| Plugin | Purpose |
+|--------|---------|
+| tpm | Plugin manager |
+| tmux-sensible | Sensible defaults |
+| tmux-yank | Copy to system clipboard |
+| tmux-resurrect | Save/restore sessions |
+| tmux-continuum | Auto-save sessions |
+| tmux-fzf | Fuzzy finder integration |
+| tmux-fzf-url | Open URLs from terminal |
+| catppuccin-tmux | Theme |
+| tmux-sessionx | Session manager |
+| tmux-floax | Floating panes |
+
+## Television
+
+Television is a fast fuzzy finder with "channels" for searching different data sources.
+
+### Usage
+
+```bash
+tv                # Search files (default)
+tv text           # Search file contents
+tv git-repos      # Find git repositories
+tv git-log        # Browse git history
+tv git-branch     # Switch branches
+tv git-diff       # Browse diffs
+tv env            # Search environment variables
+tv dirs           # Search directories
+tv docker-images  # Search docker images
+```
+
+## gh-dash
+
+Terminal dashboard for GitHub PRs, issues, and notifications.
+
+### Usage
+
+```bash
+gh dash
+```
+
+### Navigation
+
+| Key | Action |
+|-----|--------|
+| ? | Help |
+| / | Search |
+| j/k | Move up/down |
+| Enter | Open in browser |
+| Tab | Switch sections (PRs/Issues/Notifications) |
+| Ctrl+D | Preview diff |
+| c | Comment |
+| a | Approve PR |
+| m | Merge PR |
+| Ctrl+B | Open in browser |
+
+### Sections configured
+
+| Section | Filter |
+|---------|--------|
+| My Pull Requests | Open PRs authored by you |
+| Needs My Review | PRs requesting your review |
+| Involved | PRs you're involved in |
+| My Issues | Issues you created |
+| Assigned | Issues assigned to you |
+| Notifications | All, review requested, mentioned, assigned |
+
 ## Nushell
 
 Nushell is a structured data shell. Everything outputs tables instead of plain text.
@@ -243,6 +385,22 @@ open file.json             # parse JSON into a table
 | fcd | fuzzy-find directory |
 | f | fuzzy-find file → clipboard |
 | fv | fuzzy-find file → nvim |
+| z [keyword] | zoxide smart cd |
+
+## Ghostty
+
+GPU-accelerated terminal with Monokai Remastered theme, JetBrains Mono font, and translucent background.
+
+### Config highlights
+
+| Setting | Value |
+|---------|-------|
+| Theme | Monokai Remastered |
+| Font | JetBrains Mono, 15pt |
+| Background | #031219, 90% opacity |
+| Blur | 20px radius |
+| Cursor | Block, blinking |
+| Option key | Left Alt sends Alt (for AeroSpace) |
 
 ## Tools
 
@@ -252,6 +410,9 @@ open file.json             # parse JSON into a table
 | Neovim | Editor (lazy.nvim, LSP via vim.lsp.config, treesitter) |
 | Nushell | Structured data shell (vi mode, starship prompt) |
 | AeroSpace | Tiling window manager |
+| Tmux | Terminal multiplexer (catppuccin, sessionx, floax) |
+| gh-dash | GitHub PR/issue dashboard in terminal |
+| Television | Fast fuzzy finder with channels |
 | Starship | Cross-shell prompt |
 | Zoxide | Smart directory jumping (z command) |
 | Carapace | Universal tab completions (bridges zsh/fish/bash) |
@@ -316,11 +477,25 @@ Make sure AeroSpace is running (`open /Applications/AeroSpace.app`) and has acce
 
 Ghostty's `macos-option-as-alt = left` may intercept Alt before AeroSpace gets it. If AeroSpace keybindings don't work inside Ghostty, this is why. Test keybindings from another app first.
 
-### Dirty git tree warning
+### Stow conflicts with existing files
 
-`warning: Git tree is dirty` — just a warning, not an error. Commit or stash to silence it.
+If Stow says "cannot stow over existing target", either remove the existing file or use `--adopt`:
+
+```bash
+rm ~/.config/television/config.toml
+stow television
+# or
+stow --adopt television
+```
+
+### Tmux plugins not loading
+
+Install TPM first, then press `Ctrl+A, I` inside tmux:
+
+```bash
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+```
 
 ### nvim-lspconfig deprecation
 
 If you see `require('lspconfig') is deprecated`, update `lsp.lua` to use `vim.lsp.config()` and `vim.lsp.enable()` instead. See the refactored `lsp.lua` in `nvim/lua/ferb/lazy/lsp.lua`.
-|
