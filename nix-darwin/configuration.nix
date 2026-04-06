@@ -17,6 +17,9 @@
     carapace
     atuin
     aerospace
+    gh
+    television
+    tmux
   ];
 
   # Enable flakes
